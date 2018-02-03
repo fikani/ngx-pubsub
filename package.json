@@ -1,8 +1,8 @@
 {
-  "name": "ngx-pubsub",
-  "version": "1.0.0",
-  "description": "shortcut for subscribing observables",
-  "main": "index.js",
+  "name": "@fikani/ngx-pubsub",
+  "version": "0.0.2",
+  "description": "Pub/Sub design pattern using rxjs/Observable",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
