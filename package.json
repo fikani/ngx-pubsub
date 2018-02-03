@@ -1,0 +1,27 @@
+{
+  "name": "ngx-pubsub",
+  "version": "1.0.0",
+  "description": "shortcut for subscribing observables",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fikani/ngx-pubsub.git"
+  },
+  "author": "Afif Fikani",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fikani/ngx-pubsub/issues"
+  },
+  "homepage": "https://github.com/fikani/ngx-pubsub#readme",
+  "devDependencies": {
+    "typescript": "^2.7.1"
+  },
+  "dependencies": {
+    "@types/bluebird": "^3.5.20",
+    "@types/core-js": "^0.9.46",
+    "rxjs": "^5.5.6"
+  }
+}
