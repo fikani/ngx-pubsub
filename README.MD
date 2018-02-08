@@ -1,4 +1,4 @@
-# fikani-ngx-pubsub
+# @fikani/ngx-pubsub
 ## About
 
 This library helps people to use a simple Publisher/Subscriber module taking advantage of the rxjs/Observable api poresent in Angular 2+.
