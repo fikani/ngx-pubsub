@@ -64,10 +64,10 @@ import { SubscriptionService } from '@fikani/ngx-pubsub';
 
 @Injectable()
 export class PublisherService {
+  test$ = this.sub.subject("test").subscribe((data) => {
+    console.log("service: " + data);
+  })
   constructor(private sub: SubscriptionService) {
-    test$ = this.sub.subject("test").subscribe((data) => {
-      console.log("service: " + data);
-    })
     //example
     Observable.interval(1000).subscribe(n => {
       this.sub.emit("test", n)
