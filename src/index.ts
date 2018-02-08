@@ -9,7 +9,7 @@ export * from "./subscription.service";
   declarations: [
   ],
   exports: [
-  ]
+  ], providers: [SubscriptionService]
 })
 export class PubSubModule {
   static forRoot(): ModuleWithProviders {

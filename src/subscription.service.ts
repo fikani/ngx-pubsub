@@ -7,15 +7,10 @@ export class SubscriptionService {
   static subjects: { [name: string]: Subject<any> } = {};
   subscriptions: Map<any, Subscription> = new Map();
 
-  static emit(name: string, data?: any): void {
-    var fnName = SubscriptionService.createName(name);
+  emit(name: string, data?: any): void {
+    var fnName = createName(name);
     SubscriptionService.subjects[fnName] || (SubscriptionService.subjects[fnName] = new Subject());
     SubscriptionService.subjects[fnName].next(data);
-  }
-
-  static subject(name: string): Subject<any> {
-    var fnName = SubscriptionService.createName(name);
-    return this.subjects[fnName] || (this.subjects[fnName] = new Subject());
   }
 
   dispose() {
@@ -28,28 +23,65 @@ export class SubscriptionService {
     SubscriptionService.subjects = {};
     this.subscriptions.clear();
   }
-  private static createName(name: string) {
-    return "$" + name;
-  }
+}
+
+function createName(name: string) {
+  return "$" + name;
 }
 
 export function subscribe(event: string = null) {
-  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const original = descriptor.value;
+    var fnName = createName(event);
+    let subject = SubscriptionService.subjects[fnName] || (SubscriptionService.subjects[fnName] = new Subject());
 
     let ngOnInit: PropertyDescriptor = Object.getOwnPropertyDescriptor(
       target,
       "ngOnInit"
     );
+
+    console.log("ngOnInit: " + ngOnInit)
+
+    let ngOnDestroy: PropertyDescriptor = Object.getOwnPropertyDescriptor(
+      target,
+      "ngOnDestroy"
+    );
+
+    console.log("ngOnDestroy: " + ngOnDestroy)
+
+
+    let target2 = target;
+    let subs = null;
     Object.defineProperty(target, "ngOnInit", {
       value: function (...args) {
         let ctx = this;
-        SubscriptionService.subject(event).subscribe(data => {
+
+        function exec(data: any) {
           original.call(ctx, data);
-        });
-        ngOnInit.value.apply(this, ...args);
+        }
+
+        subs = subject.subscribe(exec);
+        if (ngOnInit) {
+          ngOnInit.value.apply(this, ...args);
+        }
       }
     });
+    Object.defineProperty(target2, "ngOnDestroy", {
+      value: function (...args) {
+        console.log("ngOndestroy unsubscribe")
+        subs.unsubscribe()
+        if (ngOnDestroy) {
+          ngOnDestroy.value.apply(this, ...args);
+        }
+      }
+    });
+
+    target.constructor = (...args) => {
+      console.log("constructor")
+    }
     return descriptor;
   };
+}
+export const s = {
+  subscribe: subscribe
 }
