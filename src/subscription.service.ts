@@ -7,10 +7,15 @@ export class SubscriptionService {
   static subjects: { [name: string]: Subject<any> } = {};
   subscriptions: Map<any, Subscription> = new Map();
 
-  emit(name: string, data?: any): void {
+  emit<T>(name: string, data?: T): void {
     var fnName = createName(name);
     SubscriptionService.subjects[fnName] || (SubscriptionService.subjects[fnName] = new Subject());
     SubscriptionService.subjects[fnName].next(data);
+  }
+
+  subject<T>(name: string): Subject<T> {
+    var fnName = createName(name);
+    return SubscriptionService.subjects[fnName] || (SubscriptionService.subjects[fnName] = new Subject());
   }
 
   dispose() {

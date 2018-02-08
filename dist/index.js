@@ -10,11 +10,13 @@ var SubscriptionService = (function () {
         this.subscriptions = new Map();
     }
     /**
+     * @template T
      * @param {?} name
      * @param {?=} data
      * @return {?}
      */
     SubscriptionService.prototype.emit = /**
+     * @template T
      * @param {?} name
      * @param {?=} data
      * @return {?}
@@ -23,6 +25,20 @@ var SubscriptionService = (function () {
         var /** @type {?} */ fnName = createName(name);
         SubscriptionService.subjects[fnName] || (SubscriptionService.subjects[fnName] = new Subject$1());
         SubscriptionService.subjects[fnName].next(data);
+    };
+    /**
+     * @template T
+     * @param {?} name
+     * @return {?}
+     */
+    SubscriptionService.prototype.subject = /**
+     * @template T
+     * @param {?} name
+     * @return {?}
+     */
+    function (name) {
+        var /** @type {?} */ fnName = createName(name);
+        return SubscriptionService.subjects[fnName] || (SubscriptionService.subjects[fnName] = new Subject$1());
     };
     /**
      * @return {?}
