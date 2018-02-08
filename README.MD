@@ -55,8 +55,8 @@ export class MyComponent {
   }
 }
 ```
-Don't worry about unsubscribing the observables on components, it is done under the hood using the component's lifecyle hooks. 
-You also have to emit the notification to the observers. To do so, use the `SubscritionService`:
+Don't worry about unsubscribing the observables on components, it is done under the hood by using the component's lifecyle hooks. 
+You also have to emit the notification to the observers. To do so, use the `SubscriptionService`:
 ```typescript
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/interval';
