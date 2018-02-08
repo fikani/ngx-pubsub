@@ -1,22 +1,20 @@
 # fikani-ngx-pubsub
+## About
+
+This library helps people to use a simple Publisher/Subscriber module taking advantage of the rxjs/Observable api poresent in Angular 2+.
 
 ## Installation
 
 To install this library, run:
 
 ```bash
-$ npm install fikani-ngx-pubsub --save
+$ npm install @fikani/ngx-pubsub --save
 ```
 
-## Consuming your library
+## Usage
 
-Once you have published your library to npm, you can import your library in any Angular application by running:
 
-```bash
-$ npm install fikani-ngx-pubsub
-```
-
-and then from your Angular `AppModule`:
+Add the `PubSubModule` to your Angular `AppModule`:
 
 ```typescript
 import { BrowserModule } from '@angular/platform-browser';
@@ -25,7 +23,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 
 // Import your library
-import { SampleModule } from 'fikani-ngx-pubsub';
+import { PubSubModule } from '@fikani/ngx-pubsub';
 
 @NgModule({
   declarations: [
@@ -35,7 +33,7 @@ import { SampleModule } from 'fikani-ngx-pubsub';
     BrowserModule,
 
     // Specify your library as an import
-    LibraryModule
+    PubSubModule
   ],
   providers: [],
   bootstrap: [AppComponent]
@@ -43,28 +41,36 @@ import { SampleModule } from 'fikani-ngx-pubsub';
 export class AppModule { }
 ```
 
-Once your library is imported, you can use its components, directives and pipes in your Angular application:
+Once it is imported, you can use the `subscribe` decorator in your Angular components:
 
-```xml
-<!-- You can now use your library component in app.component.html -->
-<h1>
-  {{title}}
-</h1>
-<sampleComponent></sampleComponent>
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { subscribe } from '@fikani/ngx-pubsub';
+
+@Component({...})
+export class MyComponent {
+  @subscribe("test")
+  myMethod(data) {
+    console.log("comp1 : " + data)
+  }
+}
 ```
+Don't worry about unsubscribing the observables on components, it is done under the hood using the component's lifecyle hooks. 
+You also have to emit the notification to the observers. To do so, use the `SubscritionService`:
+```typescript
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/interval';
+import { SubscriptionService } from '@fikani/ngx-pubsub';
 
-## Development
-
-To generate all `*.js`, `*.d.ts` and `*.metadata.json` files:
-
-```bash
-$ npm run build
-```
-
-To lint all `*.ts` files:
-
-```bash
-$ npm run lint
+@Injectable()
+export class PublisherService {
+  constructor(private sub: SubscriptionService) {
+    //example
+    Observable.interval(1000).subscribe(n => {
+      this.sub.emit("test", n)
+    })
+  }
+}
 ```
 
 ## License
