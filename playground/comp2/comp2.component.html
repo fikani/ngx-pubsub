@@ -1,0 +1,1 @@
+<p>Component 2</p>

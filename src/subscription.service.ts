@@ -1,21 +1,25 @@
-import { Injectable } from "@angular/core"
+import { Injectable } from "@angular/core";
 import { Subject } from "rxjs/Subject";
 import { Subscription } from "rxjs/Rx";
 
 @Injectable()
 export class SubscriptionService {
-  static subjects: { [name: string]: Subject<any> } = {};
+  private static subjects: { [name: string]: Subject<any> } = {};
   subscriptions: Map<any, Subscription> = new Map();
 
   emit<T>(name: string, data?: T): void {
-    var fnName = createName(name);
-    SubscriptionService.subjects[fnName] || (SubscriptionService.subjects[fnName] = new Subject());
+    var fnName = this.createName(name);
+    SubscriptionService.subjects[fnName] ||
+      (SubscriptionService.subjects[fnName] = new Subject());
     SubscriptionService.subjects[fnName].next(data);
   }
 
   subject<T>(name: string): Subject<T> {
-    var fnName = createName(name);
-    return SubscriptionService.subjects[fnName] || (SubscriptionService.subjects[fnName] = new Subject());
+    var fnName = this.createName(name);
+    return (
+      SubscriptionService.subjects[fnName] ||
+      (SubscriptionService.subjects[fnName] = new Subject())
+    );
   }
 
   dispose() {
@@ -28,37 +32,39 @@ export class SubscriptionService {
     SubscriptionService.subjects = {};
     this.subscriptions.clear();
   }
-}
-
-function createName(name: string) {
-  return "$" + name;
+  private createName(name: string) {
+    return "$" + name;
+  }
 }
 
 export function subscribe(event: string = null) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function(
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
     const original = descriptor.value;
-    var fnName = createName(event);
-    let subject = SubscriptionService.subjects[fnName] || (SubscriptionService.subjects[fnName] = new Subject());
+    let pub = new SubscriptionService();
+    let subject = pub.subject(event);
 
     let ngOnInit: PropertyDescriptor = Object.getOwnPropertyDescriptor(
       target,
       "ngOnInit"
     );
 
-    console.log("ngOnInit: " + ngOnInit)
+    // console.log("ngOnInit: " + ngOnInit)
 
     let ngOnDestroy: PropertyDescriptor = Object.getOwnPropertyDescriptor(
       target,
       "ngOnDestroy"
     );
 
-    console.log("ngOnDestroy: " + ngOnDestroy)
+    // console.log("ngOnDestroy: " + ngOnDestroy)
 
-
-    let target2 = target;
     let subs = null;
+    //auto subscribing
     Object.defineProperty(target, "ngOnInit", {
-      value: function (...args) {
+      value: function(...args) {
         let ctx = this;
 
         function exec(data: any) {
@@ -71,22 +77,16 @@ export function subscribe(event: string = null) {
         }
       }
     });
-    Object.defineProperty(target2, "ngOnDestroy", {
-      value: function (...args) {
-        console.log("ngOndestroy unsubscribe")
-        subs.unsubscribe()
+    //auto unsubscribing
+    Object.defineProperty(target, "ngOnDestroy", {
+      value: function(...args) {
+        console.log("ngOndestroy unsubscribe");
+        subs.unsubscribe();
         if (ngOnDestroy) {
           ngOnDestroy.value.apply(this, ...args);
         }
       }
     });
-
-    target.constructor = (...args) => {
-      console.log("constructor")
-    }
     return descriptor;
   };
-}
-export const s = {
-  subscribe: subscribe
 }
