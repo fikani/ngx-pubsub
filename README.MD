@@ -2,7 +2,7 @@
 
 ## About
 
-This library helps people to use a simple Publisher/Subscriber module taking advantage of the rxjs/Observable api poresent in Angular 2+.
+This library helps people to use a simple Publisher/Subscriber module taking advantage of the rxjs/Observable api present in Angular 2+.
 
 ## Installation
 

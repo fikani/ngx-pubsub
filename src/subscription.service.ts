@@ -1,7 +1,5 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs/Subject";
-import { Subscription } from "rxjs/Rx";
-import { ReplaySubject } from "rxjs/ReplaySubject";
 
 @Injectable()
 export class SubscriptionService {
@@ -16,7 +14,7 @@ export class SubscriptionService {
     var fnName = this.createName(name);
     let subject =
       SubscriptionService.subjects[fnName] ||
-      (SubscriptionService.subjects[fnName] = new ReplaySubject(1));
+      (SubscriptionService.subjects[fnName] = new Subject());
     return subject;
   }
 

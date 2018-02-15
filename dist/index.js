@@ -1,5 +1,5 @@
 import { Injectable, NgModule } from '@angular/core';
-import { ReplaySubject as ReplaySubject$1 } from 'rxjs/ReplaySubject';
+import { Subject as Subject$1 } from 'rxjs/Subject';
 
 /**
  * @fileoverview added by tsickle
@@ -37,7 +37,7 @@ var SubscriptionService = (function () {
     function (name) {
         var /** @type {?} */ fnName = this.createName(name);
         var /** @type {?} */ subject = SubscriptionService.subjects[fnName] ||
-            (SubscriptionService.subjects[fnName] = new ReplaySubject$1(1));
+            (SubscriptionService.subjects[fnName] = new Subject$1());
         return subject;
     };
     /**
