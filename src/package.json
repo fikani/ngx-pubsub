@@ -3,7 +3,7 @@
   "version": "0.1.5",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fikani/ngx-pubsub.git"
+    "url": "https://github.com/fikani/ngx-pubsub"
   },
   "author": {
     "name": "Afif Fikani",
@@ -12,7 +12,7 @@
   "keywords": ["angular"],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fikani/ngx-pubsub.git/issues"
+    "url": "https://github.com/fikani/ngx-pubsub/issues"
   },
   "main": "fikani-ngx-pubsub.umd.js",
   "module": "fikani-ngx-pubsub.js",
