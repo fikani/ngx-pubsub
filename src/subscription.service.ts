@@ -1,25 +1,23 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs/Subject";
 import { Subscription } from "rxjs/Rx";
+import { ReplaySubject } from "rxjs/ReplaySubject";
 
 @Injectable()
 export class SubscriptionService {
   private static subjects: { [name: string]: Subject<any> } = {};
-  subscriptions: Map<any, Subscription> = new Map();
 
   emit<T>(name: string, data?: T): void {
-    var fnName = this.createName(name);
-    SubscriptionService.subjects[fnName] ||
-      (SubscriptionService.subjects[fnName] = new Subject());
-    SubscriptionService.subjects[fnName].next(data);
+    let subject = this.subject(name);
+    subject.next(data);
   }
 
   subject<T>(name: string): Subject<T> {
     var fnName = this.createName(name);
-    return (
+    let subject =
       SubscriptionService.subjects[fnName] ||
-      (SubscriptionService.subjects[fnName] = new Subject())
-    );
+      (SubscriptionService.subjects[fnName] = new ReplaySubject(1));
+    return subject;
   }
 
   dispose() {
@@ -30,21 +28,29 @@ export class SubscriptionService {
       }
     }
     SubscriptionService.subjects = {};
-    this.subscriptions.clear();
   }
+
   private createName(name: string) {
     return "$" + name;
   }
 }
 
+let pub = new SubscriptionService();
 export function subscribe(event: string = null) {
   return function(
     target: any,
     propertyKey: string,
-    descriptor: PropertyDescriptor
-  ) {
-    const original = descriptor.value;
-    let pub = new SubscriptionService();
+    descriptor: PropertyDescriptor = null
+  ): PropertyDescriptor | any {
+    let original;
+    if (!descriptor) {
+      let newPropertyName = `__${propertyKey}__$`;
+      createPropertyDescriptor(target, propertyKey, newPropertyName);
+      original = Object.getOwnPropertyDescriptor(target, newPropertyName).value;
+    } else {
+      original = descriptor.value || descriptor.set;
+    }
+
     let subject = pub.subject(event);
 
     let ngOnInit: PropertyDescriptor = Object.getOwnPropertyDescriptor(
@@ -68,7 +74,11 @@ export function subscribe(event: string = null) {
         let ctx = this;
 
         function exec(data: any) {
-          original.call(ctx, data);
+          if (typeof ctx[propertyKey] === "function") {
+            ctx[propertyKey](data);
+          } else {
+            original.call(ctx, data);
+          }
         }
 
         subs = subject.subscribe(exec);
@@ -87,6 +97,19 @@ export function subscribe(event: string = null) {
         }
       }
     });
-    return descriptor;
+    if (descriptor) return descriptor;
   };
+}
+
+function createPropertyDescriptor(
+  target: any,
+  propertyKey: string,
+  newPropertyName: string
+): void {
+  Object.defineProperty(target, newPropertyName, {
+    value: function(data) {
+      this[propertyKey] = data;
+    },
+    writable: true
+  });
 }

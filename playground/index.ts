@@ -20,9 +20,9 @@ class AppComponent {
   toggle: boolean = true;
 
   constructor(private pub: SubscriptionService, private serv1: Serv1Service) {
-    Observable.interval(1000).subscribe(_ => {
-      this.pub.emit("test", _);
-    });
+    // Observable.interval(1000).subscribe(_ => {
+    //   this.pub.emit("test", _);
+    // });
   }
 }
 

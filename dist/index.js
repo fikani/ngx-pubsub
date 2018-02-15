@@ -1,5 +1,5 @@
 import { Injectable, NgModule } from '@angular/core';
-import { Subject as Subject$1 } from 'rxjs/Subject';
+import { ReplaySubject as ReplaySubject$1 } from 'rxjs/ReplaySubject';
 
 /**
  * @fileoverview added by tsickle
@@ -7,7 +7,6 @@ import { Subject as Subject$1 } from 'rxjs/Subject';
  */
 var SubscriptionService = (function () {
     function SubscriptionService() {
-        this.subscriptions = new Map();
     }
     /**
      * @template T
@@ -22,10 +21,8 @@ var SubscriptionService = (function () {
      * @return {?}
      */
     function (name, data) {
-        var /** @type {?} */ fnName = this.createName(name);
-        SubscriptionService.subjects[fnName] ||
-            (SubscriptionService.subjects[fnName] = new Subject$1());
-        SubscriptionService.subjects[fnName].next(data);
+        var /** @type {?} */ subject = this.subject(name);
+        subject.next(data);
     };
     /**
      * @template T
@@ -39,8 +36,9 @@ var SubscriptionService = (function () {
      */
     function (name) {
         var /** @type {?} */ fnName = this.createName(name);
-        return (SubscriptionService.subjects[fnName] ||
-            (SubscriptionService.subjects[fnName] = new Subject$1()));
+        var /** @type {?} */ subject = SubscriptionService.subjects[fnName] ||
+            (SubscriptionService.subjects[fnName] = new ReplaySubject$1(1));
+        return subject;
     };
     /**
      * @return {?}
@@ -56,7 +54,6 @@ var SubscriptionService = (function () {
             }
         }
         SubscriptionService.subjects = {};
-        this.subscriptions.clear();
     };
     /**
      * @param {?} name
@@ -77,6 +74,7 @@ var SubscriptionService = (function () {
     SubscriptionService.ctorParameters = function () { return []; };
     return SubscriptionService;
 }());
+var pub = new SubscriptionService();
 /**
  * @param {?=} event
  * @return {?}
@@ -84,8 +82,16 @@ var SubscriptionService = (function () {
 function subscribe(event) {
     if (event === void 0) { event = null; }
     return function (target, propertyKey, descriptor) {
-        var /** @type {?} */ original = descriptor.value;
-        var /** @type {?} */ pub = new SubscriptionService();
+        if (descriptor === void 0) { descriptor = null; }
+        var /** @type {?} */ original;
+        if (!descriptor) {
+            var /** @type {?} */ newPropertyName = "__" + propertyKey + "__$";
+            createPropertyDescriptor(target, propertyKey, newPropertyName);
+            original = Object.getOwnPropertyDescriptor(target, newPropertyName).value;
+        }
+        else {
+            original = descriptor.value || descriptor.set;
+        }
         var /** @type {?} */ subject = pub.subject(event);
         var /** @type {?} */ ngOnInit = Object.getOwnPropertyDescriptor(target, "ngOnInit");
         // console.log("ngOnInit: " + ngOnInit)
@@ -105,7 +111,12 @@ function subscribe(event) {
                  * @return {?}
                  */
                 function exec(data) {
-                    original.call(ctx, data);
+                    if (typeof ctx[propertyKey] === "function") {
+                        ctx[propertyKey](data);
+                    }
+                    else {
+                        original.call(ctx, data);
+                    }
                 }
                 subs = subject.subscribe(exec);
                 if (ngOnInit) {
@@ -129,8 +140,23 @@ function subscribe(event) {
                 var _a;
             }
         });
-        return descriptor;
+        if (descriptor)
+            return descriptor;
     };
+}
+/**
+ * @param {?} target
+ * @param {?} propertyKey
+ * @param {?} newPropertyName
+ * @return {?}
+ */
+function createPropertyDescriptor(target, propertyKey, newPropertyName) {
+    Object.defineProperty(target, newPropertyName, {
+        value: function (data) {
+            this[propertyKey] = data;
+        },
+        writable: true
+    });
 }
 
 /**

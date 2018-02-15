@@ -10,6 +10,18 @@ export class Comp1Component implements OnInit {
 
   ngOnInit() {}
 
+  @subscribe("test") myProp: string;
+
+  @subscribe("test")
+  handler = (data: any) => {
+    console.log("arrow function", data);
+  };
+
+  @subscribe("test")
+  set todo(data: any) {
+    console.log("todo", data);
+  }
+
   @subscribe("test")
   onTest(data: any) {
     console.log(this, "Event: test => ", data);
