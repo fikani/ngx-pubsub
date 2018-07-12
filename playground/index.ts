@@ -8,7 +8,6 @@ import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 import { PubSubModule, SubscriptionService } from "../dist";
 import { Comp1Component } from "./comp1/comp1";
 import { Comp2Component } from "./comp2/comp2";
-import { Observable } from "rxjs/Observable";
 import "rxjs/add/observable/interval";
 import { Serv1Service } from "./serv1/serv1.service";
 
