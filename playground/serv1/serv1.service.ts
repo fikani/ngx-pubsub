@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { SubscriptionService } from "../../dist";
-import { Observable } from "rxjs/Observable";
+import { interval } from "rxjs";
 import "rxjs/add/observable/interval";
 
 @Injectable()
@@ -10,7 +10,7 @@ export class Serv1Service {
   // });
 
   constructor(private pub: SubscriptionService) {
-    Observable.interval(1000).subscribe(_ => {
+    interval(1000).subscribe(_ => {
       this.pub.emit("test", "from : Serv1 " + _);
     });
   }

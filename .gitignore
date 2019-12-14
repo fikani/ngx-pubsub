@@ -1,5 +1,6 @@
 # Node
-node_modules/*
+node_modules/
+/node_modules
 npm-debug.log
 
 # TypeScript
@@ -29,7 +30,7 @@ Desktop.ini
 **/*.ngfactory.ts
 
 # Build files
-dist/*
+dist/
 
 # Playground tmp files
 .playground

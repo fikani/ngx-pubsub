@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { Subject } from "rxjs/Subject";
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class SubscriptionService {
@@ -11,7 +11,7 @@ export class SubscriptionService {
   }
 
   subject<T>(name: string): Subject<T> {
-    var fnName = this.createName(name);
+    let fnName = this.createName(name);
     let subject =
       SubscriptionService.subjects[fnName] ||
       (SubscriptionService.subjects[fnName] = new Subject());
@@ -29,7 +29,7 @@ export class SubscriptionService {
   }
 
   private createName(name: string) {
-    return "$" + name;
+    return '$' + name;
   }
 }
 
@@ -53,26 +53,26 @@ export function subscribe(event: string = null) {
 
     let ngOnInit: PropertyDescriptor = Object.getOwnPropertyDescriptor(
       target,
-      "ngOnInit"
+      'ngOnInit'
     );
 
-    // console.log("ngOnInit: " + ngOnInit)
+    // console.log('ngOnInit: ' + ngOnInit)
 
     let ngOnDestroy: PropertyDescriptor = Object.getOwnPropertyDescriptor(
       target,
-      "ngOnDestroy"
+      'ngOnDestroy'
     );
 
-    // console.log("ngOnDestroy: " + ngOnDestroy)
+    // console.log('ngOnDestroy: ' + ngOnDestroy)
 
     let subs = null;
-    //auto subscribing
-    Object.defineProperty(target, "ngOnInit", {
+    // auto subscribing
+    Object.defineProperty(target, 'ngOnInit', {
       value: function(...args) {
         let ctx = this;
 
         function exec(data: any) {
-          if (typeof ctx[propertyKey] === "function") {
+          if (typeof ctx[propertyKey] === 'function') {
             ctx[propertyKey](data);
           } else {
             original.call(ctx, data);
@@ -85,17 +85,19 @@ export function subscribe(event: string = null) {
         }
       }
     });
-    //auto unsubscribing
-    Object.defineProperty(target, "ngOnDestroy", {
+    // auto unsubscribing
+    Object.defineProperty(target, 'ngOnDestroy', {
       value: function(...args) {
-        console.log("ngOndestroy unsubscribe");
+        console.log('ngOndestroy unsubscribe');
         subs.unsubscribe();
         if (ngOnDestroy) {
           ngOnDestroy.value.apply(this, ...args);
         }
       }
     });
-    if (descriptor) return descriptor;
+    if (descriptor) {
+      return descriptor;
+    }
   };
 }
 

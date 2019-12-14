@@ -19,8 +19,8 @@
   "jsnext:main": "fikani-ngx-pubsub.js",
   "typings": "fikani-ngx-pubsub.d.ts",
   "peerDependencies": {
-    "@angular/core": "^4.0.0",
-    "rxjs": "^5.1.0",
-    "zone.js": "^0.8.4"
+    "@angular/core": "^6.0.2",
+    "rxjs": "^6.0.0",
+    "zone.js": "^0.8.26"
   }
 }

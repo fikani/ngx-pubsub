@@ -1,7 +1,7 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { SubscriptionService } from "./subscription.service"
+import { SubscriptionService } from './subscription.service'
 
-export * from "./subscription.service";
+export * from './subscription.service';
 
 @NgModule({
   imports: [
